@@ -88,6 +88,74 @@ To rigorously quantify the effect of Active Memory on long-horizon coding tasks,
 
 ---
 
+## 📊 Project Progress & Roadmap (项目完成进度与规划)
+
+### 📈 Milestone Overview
+
+| Module / Milestone | Status | Details |
+| :--- | :---: | :--- |
+| **System 1: Invariant Storage & Fast Recall** | 🟢 **100% Completed** | Typed JSON schema, sub-millisecond Jaccard token overlap & inverted keyword indexing, strict superseded rule exclusion |
+| **System 2: Dual-Engine Reconciliation** | 🟢 **100% Completed** | LLM causal judge + rule-based fallback, contradiction resolution, causal lineage tracking (`supersededBy`/`supersedes`) |
+| **Natural Language Directives & Throttling** | 🟢 **100% Completed** | Regex command parser, dynamic intervals (e.g. *"把冲突检测间隔设为5轮"*), zero-config persistence |
+| **QA Test Suite (5 Core Scenarios)** | 🟢 **100% Completed** | 5/5 automated test cases passing in Node 22 (`npm test`) |
+| **Raiden & Tank Arcade Benchmarks** | 🟢 **100% Completed** | Headless automated verification for both Treatment (20/20 PASS) and Control (17/17 PASS) groups |
+| **Open Source Release & Technical Blog** | 🟢 **100% Completed** | Published across GitHub Pages, 58 iShare, CSDN, Zhihu, and Juejin |
+| **Active Focus Engine (Component 2)** | 🟡 **Planned / In Design** | Dynamic intent scoping, task attention bounding, and hierarchical goal tracking |
+| **Offline Local LLM Adapters (Ollama/vLLM)** | 🟡 **In Progress (30%)** | Native offline conflict reconciliation without external API keys |
+| **Cross-Repo Global Invariants (`~/.pi`)** | ⚪ **Planned** | Global coding style/rule inheritance across multiple workspaces |
+| **Hybrid Local Embedding Search** | ⚪ **Planned** | Optional lightweight ONNX/BGE embedding for cross-lingual fuzzy semantic recall |
+| **Interactive TUI Memory Inspector** | ⚪ **Planned** | Visual CLI graph to inspect causal supersede trees (`pi memory graph`) |
+
+---
+
+### ✅ Completed Features (已完成部分)
+
+1. **Active Memory 核心认知引擎 (`.pi/extensions/active-memory.ts`)**:
+   - **不变量契约（MemoryInvariant）**：结构化约束定义，涵盖唯一 ID、分类（architecture, gameplay, ui, tooling, fix）、标签词元、命中热度与生命周期时间戳。
+   - **快环召回系统（System 1 Fast Path）**：在 `<10ms` 内根据当前用户输入，通过 Jaccard 词元重合与倒排索引提取 Top-K 条高相关约束，前置注入到 Agent 工作帧。
+   - **废弃规则硬过滤**：已被更新或推翻的规则标记为 `supersededBy`，彻底移出活跃检索池，杜绝大模型在矛盾指令间摇摆。
+   - **双引擎冲突消解（System 2 Slow Path）**：
+     - *大模型因果引擎*：自动识别“替换”、“改用”、“推翻”等演进意图，建立有向因果链条（`supersededBy` 与 `supersedes`）。
+     - *确定性规则回滚引擎*：在断网、模型超时或欠费时自动降级到本地规则启发式消解，保障 0 崩溃。
+   - **自然语言交互与周期节流**：支持在对话中直接输入口语指令（如 *“把冲突检测间隔设为5轮”*），自动解析并持久化；默认每 3 轮节流执行，大幅节省 Token。
+
+2. **严格自动化 QA 测试套件 (`tests/test_qa_suite.mjs`)**:
+   - `Case 1 [废弃过滤]`：验证被 supersede 的历史旧规则 100% 不会被召回。
+   - `Case 2 [Jaccard去重]`：验证同义复述规则的重叠度计算与去重。
+   - `Case 3 [双引擎冲突消解]`：覆盖大模型因果追溯、离线规则回滚、时序留痕全链路。
+   - `Case 4 [容灾回退提取]`：验证无结构化数据时的启发式规则提取。
+   - `Case 5 [指令解析与节流]`：验证自然语言配置解析与轮次节流计数器。
+   - *当前状态*：`npm test` 5 项核心自检 **100% PASS**。
+
+3. **双项目连贯 A/B 盲测基准 (`experiments/tank_battle_benchmark`)**:
+   - **坦克大战（Stage 1）**：验证红白机经典玩法、4 种坦克、纯代码几何绘制约束。
+   - **雷电复刻（Stage 2）**：验证长上下文下三系升级（黄机枪/跟踪导弹/激光）、同种三连吃满级、异种切换归 1 级、保险炸弹消弹、中弹降级、Boss 三阶段等。
+   - *自检结果*：
+     - Treatment 组：坦克 25/25 PASS，雷电 20/20 PASS（通过率 **100%**）。
+     - Control 组：修复后基线 17/17 PASS，但暴露出缺失炸弹意识、丢失死亡惩罚、代码冗余多出 14%~17.6% 等结构性缺陷。
+
+---
+
+### 🚧 In-Progress & Planned Roadmap (待实现 / 进行中)
+
+1. **Meta Muse Wonder 核心模块二：Active Focus 引擎** `[进行中 / 架构设计]`
+   - 目标：复刻 Muse Wonder 技术报告中的 **Active Focus** 范式。
+   - 规划：在多任务并发或复杂重构中，构建动态任务意图边界（Task Attention Frame），防止 Agent 在修改底层基础库时发生目标发散与过度修改。
+
+2. **离线/本地大模型冲突仲裁适配器** `[进行中 (30%)]`
+   - 目标：除当前支持的 OpenAI 兼容接口外，增加对 Ollama、vLLM 以及本地小型化模型（如 Qwen2.5-Coder-1.5B/7B）的直连适配，实现完全零外部网络依赖的本地闭环。
+
+3. **全局多仓库记忆级联 (`~/.pi/global-memory.json`)** `[待排期]`
+   - 目标：将个人通用工程偏好（如代码风格、首选测试框架、Git 提交规范）提升为全局不变量，项目级记忆继承全局记忆并支持局部覆盖。
+
+4. **混合语义向量检索（Hybrid Invariant Recall）** `[待排期]`
+   - 目标：在保持极快 Jaccard 词元检索的基础上，引入可选的本地轻量 ONNX 向量嵌入（如 BGE-micro），增强跨语种与深层隐式语义的召回能力。
+
+5. **交互式 TUI 记忆调试器（CLI Inspector）** `[待排期]`
+   - 目标：开发终端可视化工具（`pi memory ls`、`pi memory tree`、`pi memory prune`），允许开发者直观查看因果推翻链条并一键剪枝。
+
+---
+
 ## 🚀 Quickstart
 
 ### Prerequisites
