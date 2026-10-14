@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "reconcileInterval": 5,
+  "turnsSinceReconcile": 1,
+  "invariants": [
+    {
+      "id": "mem_bun_policy",
+      "content": "本项目严格强制使用 Bun (bun add) 管理所有依赖包，严禁使用 npm 或 pnpm。",
+      "category": "tooling",
+      "tags": [
+        "bun",
+        "npm",
+        "pnpm",
+        "package",
+        "dependency",
+        "依赖",
+        "包",
+        "lodash"
+      ],
+      "createdAt": 1728900000000,
+      "hitCount": 8,
+      "supersededBy": "mem_pnpm_policy",
+      "supersededAt": 1791964000000
+    },
+    {
+      "id": "mem_pnpm_policy",
+      "content": "本项目严格强制使用 pnpm (pnpm add) 管理所有依赖包，严禁使用 npm、yarn 或 Bun（旧 Bun 规范已废除）。",
+      "category": "tooling",
+      "tags": [
+        "pnpm",
+        "npm",
+        "yarn",
+        "bun",
+        "package",
+        "dependency",
+        "依赖",
+        "包",
+        "lockfile",
+        "pnpm-lock"
+      ],
+      "createdAt": 1791964000000,
+      "hitCount": 0,
+      "supersededBy": "mem_a6f79d54",
+      "supersededAt": 1791964567065
+    },
+    {
+      "id": "mem_unit_test",
+      "content": "项目所有单元测试必须存放在 tests/unit/ 目录下，使用 vitest 运行。",
+      "category": "tooling",
+      "tags": [
+        "tests",
+        "unit",
+        "测试",
+        "vitest",
+        "运行",
+        "目录"
+      ],
+      "createdAt": 1791962427809,
+      "hitCount": 7
+    },
+    {
+      "id": "mem_api_response",
+      "content": "API 响应格式必须统一包裹在 { code: 0, data: ..., message: \"ok\" } 中",
+      "category": "architecture",
+      "tags": [
+        "api",
+        "响应格式必须统一包裹在",
+        "code",
+        "data",
+        "message",
+        "ok"
+      ],
+      "createdAt": 1791963166289,
+      "hitCount": 5
+    },
+    {
+      "id": "mem_a6f79d54",
+      "content": "项目全面切换为 pnpm 管理依赖包，废除旧的 Bun 规范",
+      "category": "tooling",
+      "tags": [
+        "项目",
+        "全面",
+        "切换",
+        "pnpm",
+        "管理",
+        "依赖",
+        "废除",
+        "bun",
+        "规范"
+      ],
+      "createdAt": 1791964567065,
+      "hitCount": 0,
+      "supersededBy": "mem_9a0a1b9a",
+      "supersededAt": 1791964567065
+    },
+    {
+      "id": "mem_9a0a1b9a",
+      "content": "使用 npm、yarn 或 Bun（旧 Bun 规范已废除）」",
+      "category": "tooling",
+      "tags": [
+        "使用",
+        "npm",
+        "yarn",
+        "bun",
+        "bun",
+        "规范",
+        "废除"
+      ],
+      "createdAt": 1791964567065,
+      "hitCount": 2
+    },
+    {
+      "id": "mem_314f9c6c",
+      "content": "MuseWonderFullReplication 项目使用 pnpm 作为包管理器（package.json 中 packageManager: pnpm@12.11.2，存在 pnpm-lock.yaml）；新增依赖用 `pnpm add <pkg>`，不要使用 npm/yarn 以免产生冲突的锁文件。",
+      "category": "tooling",
+      "tags": [
+        "musewonderfullreplication",
+        "项目",
+        "使用",
+        "pnpm",
+        "作为",
+        "管理",
+        "package.json",
+        "packagemanager",
+        "pnpm",
+        "12.11.2",
+        "存在",
+        "pnpm",
+        "lock.yaml",
+        "新增",
+        "依赖",
+        "pnpm",
+        "add",
+        "pkg",
+        "不要",
+        "使用",
+        "npm",
+        "yarn",
+        "以免",
+        "产生",
+        "冲突",
+        "文件"
+      ],
+      "createdAt": 1791964692915,
+      "hitCount": 1
+    }
+  ]
+}

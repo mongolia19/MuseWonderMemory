@@ -1,0 +1,26 @@
+{
+  "mode": "generate",
+  "model": "black-forest-labs/flux.2-klein-4b",
+  "prompt": "A clean, modern, high-tech conceptual illustration for a software engineering blog. Theme: Active Memory for AI Coding Agents. A glowing central memory hub with luminous data streams connecting retro arcade game elements - a stylized tank and a sci-fi space fighter jet from classic arcade shooters. Sleek dark background with deep blue and purple tones, neon cyan and gold circuit lines, minimalist and elegant editorial tech aesthetic, wide 16:9 aspect ratio, high resolution.",
+  "output_path": "/Users/a58/prjs/MuseWonderFullReplication/experiments/pi_active_memory_cover.jpg",
+  "input_path": null,
+  "input_mode": null,
+  "request_payload": {
+    "model": "black-forest-labs/flux.2-klein-4b",
+    "messages": [
+      {
+        "role": "user",
+        "content": "A clean, modern, high-tech conceptual illustration for a software engineering blog. Theme: Active Memory for AI Coding Agents. A glowing central memory hub with luminous data streams connecting retro arcade game elements - a stylized tank and a sci-fi space fighter jet from classic arcade shooters. Sleek dark background with deep blue and purple tones, neon cyan and gold circuit lines, minimalist and elegant editorial tech aesthetic, wide 16:9 aspect ratio, high resolution."
+      }
+    ],
+    "modalities": [
+      "image"
+    ],
+    "image_config": {
+      "aspect_ratio": "16:9"
+    }
+  },
+  "ok": false,
+  "http_status": 402,
+  "error": "{\"error\":{\"message\":\"Insufficient credits. Add more using https://openrouter.ai/settings/credits\",\"code\":402,\"metadata\":{\"limit_source\":\"openrouter_credits\",\"remedy_hint\":\"Add credits at https://openrouter.ai/settings/credits, or lower max_tokens / prompt size to fit your remaining balance.\"}}}"
+}

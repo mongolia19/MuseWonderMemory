@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "reconcileInterval": 3,
+  "turnsSinceReconcile": 2,
+  "invariants": [
+    {
+      "id": "mem_9fcbc397",
+      "content": "纯几何/代码绘制: all graphics must be drawn procedurally with code (Pygame primitives / geometry). No external image assets, sprites, or asset files may be required.",
+      "category": "preference",
+      "tags": [
+        "几何",
+        "代码",
+        "绘制",
+        "all",
+        "graphics",
+        "must",
+        "be",
+        "drawn",
+        "procedurally",
+        "with",
+        "code",
+        "pygame",
+        "primitives",
+        "geometry",
+        "no",
+        "external",
+        "image",
+        "assets",
+        "sprites",
+        "or",
+        "asset",
+        "files",
+        "may",
+        "be",
+        "required"
+      ],
+      "createdAt": 1791965703620,
+      "hitCount": 2
+    }
+  ]
+}
