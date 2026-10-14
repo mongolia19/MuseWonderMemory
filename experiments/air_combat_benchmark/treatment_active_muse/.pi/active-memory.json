@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "invariants": [
+    {
+      "id": "inv_bob_perspective",
+      "content": "第一人称座舱视角: 游戏全程严格保持喷火战斗机第一人称视角，绘制座舱边框、带俯仰/滚转倾角的人工平视仪地平线与瞄准准星，杜绝变成第三人称或俯视角",
+      "category": "architecture",
+      "tags": ["第一人称", "座舱", "HUD", "地平线", "3D投影"],
+      "createdAt": 1791976000000,
+      "hitCount": 5
+    },
+    {
+      "id": "inv_bob_flight_model",
+      "content": "二战空战操纵习惯: 支持 Pitch(俯仰)、Roll(滚转)、Yaw(偏航) 与 Throttle(油门加减速)，包含失速下坠与机枪过热冷却槽，机炮射击带有提前量弹道",
+      "category": "gameplay",
+      "tags": ["空战习惯", "俯仰", "滚转", "油门", "过热", "提前量"],
+      "createdAt": 1791976001000,
+      "hitCount": 4
+    },
+    {
+      "id": "inv_bob_two_stages",
+      "content": "不列颠双战役流程: Stage 1 为雷达站保卫战(必须有雷达站生命值与拦截波次)，Stage 2 为海峡对地轰炸战(必须有下俯投弹瞄准器与炸弹摧毁地面目标逻辑)",
+      "category": "gameplay",
+      "tags": ["不列颠空战", "第一关保卫", "第二关轰炸", "雷达站血条", "投弹瞄准器"],
+      "createdAt": 1791976002000,
+      "hitCount": 6
+    },
+    {
+      "id": "inv_bob_pure_code",
+      "content": "纯几何代码渲染: 所有战机、座舱、云层、海面与地面目标均使用 pygame 矢量与多边形绘制，杜绝任何外部静态图片文件依赖",
+      "category": "tooling",
+      "tags": ["纯几何", "无外部素材", "pygame", "代码绘制"],
+      "createdAt": 1791976003000,
+      "hitCount": 8
+    }
+  ]
+}

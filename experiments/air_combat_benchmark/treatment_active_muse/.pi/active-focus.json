@@ -1,0 +1,73 @@
+{
+  "version": "1.0.0",
+  "updatedAt": 1791976000000,
+  "rootGoal": {
+    "id": "goal_bob_root",
+    "description": "开发不列颠空战第一人称飞行射击游戏（第一关保卫+第二关轰炸）并保证空战操纵与质量通过",
+    "status": "active",
+    "successCriteria": [
+      "python3 battle_of_britain.py --test 退出码 0",
+      "第一人称座舱与地平线倾角正常",
+      "第一关雷达站保卫与第二关对地轰炸无缝串联"
+    ]
+  },
+  "subgoals": [
+    {
+      "id": "sub_cockpit_flight",
+      "title": "喷火式座舱HUD、人工地平线倾角与空战操纵物理(俯仰/滚转/油门/过热)",
+      "status": "completed",
+      "order": 1,
+      "turnsSpent": 1,
+      "completedAt": 1791976100000,
+      "completionEvidence": "t_cockpit_hud_and_horizon: PASS"
+    },
+    {
+      "id": "sub_stage1_defense",
+      "title": "第一关保卫战：拦截德军He111轰炸机与Bf109护航机，保卫多佛雷达站",
+      "status": "completed",
+      "order": 2,
+      "turnsSpent": 1,
+      "completedAt": 1791976200000,
+      "completionEvidence": "t_stage1_radar_defense: PASS"
+    },
+    {
+      "id": "sub_stage2_bombing",
+      "title": "第二关轰炸战：飞越海峡对加莱德军前沿机场实施俯冲轰炸与高炮规避",
+      "status": "in_progress",
+      "order": 3,
+      "turnsSpent": 1,
+      "criteria": {
+        "matchPattern": "t_stage2_dive_bombing",
+        "expectedExitCode": 0
+      }
+    },
+    {
+      "id": "sub_headless_qa",
+      "title": "Headless 无界面 20 项严格自检与双战役全流程通关冒烟",
+      "status": "pending",
+      "order": 4,
+      "turnsSpent": 0,
+      "criteria": {
+        "matchPattern": "SELFTEST: OK",
+        "expectedExitCode": 0
+      }
+    }
+  ],
+  "scopeGuard": {
+    "enabled": true,
+    "allowedPatterns": [
+      "experiments/air_combat_benchmark/treatment_active_muse/**",
+      "tests/**"
+    ],
+    "forbiddenPatterns": [
+      "experiments/air_combat_benchmark/control_no_memory/**",
+      "package.json",
+      ".git/**"
+    ],
+    "strictEnforce": false
+  },
+  "health": {
+    "consecutiveFailures": 0,
+    "maxFailureThreshold": 3
+  }
+}

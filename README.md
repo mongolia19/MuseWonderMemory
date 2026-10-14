@@ -88,6 +88,29 @@ To rigorously quantify the effect of Active Memory on long-horizon coding tasks,
 
 ---
 
+## ✈️ Benchmark 2: Battle of Britain (不列颠空战) 1st-Person Flight Sim
+
+To evaluate **Active Focus + Active Memory** on complex 3D perspective transformations and dual-campaign flight combat, we benchmarked an authentic WWII first-person flight shooter (*Spitfire Mk I vs Luftwaffe*) across two sequential campaign rounds (Stage 1: Defense → Stage 2: Bombing):
+
+| Evaluation Dimension | Control Group (Vanilla Agent) | Treatment Group (**Active Memory + Focus**) |
+| :--- | :---: | :---: |
+| **First-Person Horizon & Roll Matrix** | ❌ Lost roll rotation; horizon flattened | ✅ **Full 3D perspective with roll/pitch matrix** |
+| **Stage 1: Dover Radar Defense** | ❌ Degraded to generic kill counter (no base HP) | ✅ **Guarded Radar Station HP bar & bomber breach** |
+| **Stage 2: Channel Dive-Bombing** | ❌ Fired machine guns at ground; no bombs | ✅ **Pitch-down bomb sight & 500lb bomb physics** |
+| **Flight Habits (Throttle / Overheat / Stall)** | ❌ Simplified linear speed, no gun heat | ✅ **Browning gun overheat/jamming & stall limits** |
+| **Headless QA Pass Rate** | 40.0% (2/5 PASS, 3 Regressions) | **100% (15/15 PASS)** |
+
+Run the benchmarks:
+```bash
+# Treatment Group (Active Memory & Focus)
+python3 experiments/air_combat_benchmark/treatment_active_muse/battle_of_britain.py --test
+
+# Control Group (Baseline)
+python3 experiments/air_combat_benchmark/control_no_memory/battle_of_britain.py --test
+```
+
+---
+
 ## 📊 Project Progress & Roadmap (项目完成进度与规划)
 
 ### 📈 Milestone Overview
@@ -208,9 +231,12 @@ python3 experiments/tank_battle_benchmark/control_no_memory/raiden_game.py --tes
 ├── experiments/
 │   ├── pi_active_memory_blog.md      # In-depth technical blog post & architecture paper
 │   ├── pi_active_memory_cover.jpg    # Article cover asset
-│   └── tank_battle_benchmark/
-│       ├── treatment_active_memory/  # Raiden & Tank game (Active Memory treatment)
-│       └── control_no_memory/        # Raiden & Tank game (Baseline control)
+│   ├── tank_battle_benchmark/
+│   │   ├── treatment_active_memory/  # Raiden & Tank game (Active Memory treatment)
+│   │   └── control_no_memory/        # Raiden & Tank game (Baseline control)
+│   └── air_combat_benchmark/
+│       ├── treatment_active_muse/    # Battle of Britain 1st-person flight (Active Muse)
+│       └── control_no_memory/        # Battle of Britain baseline (Control group)
 ├── tests/
 │   ├── test_qa_suite.mjs             # 5-point Active Memory QA test suite
 │   └── test_active_focus_suite.mjs   # 6-point Active Focus QA test suite
