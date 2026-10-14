@@ -100,7 +100,7 @@ To rigorously quantify the effect of Active Memory on long-horizon coding tasks,
 | **QA Test Suite (5 Core Scenarios)** | 🟢 **100% Completed** | 5/5 automated test cases passing in Node 22 (`npm test`) |
 | **Raiden & Tank Arcade Benchmarks** | 🟢 **100% Completed** | Headless automated verification for both Treatment (20/20 PASS) and Control (17/17 PASS) groups |
 | **Open Source Release & Technical Blog** | 🟢 **100% Completed** | Published across GitHub Pages, 58 iShare, CSDN, Zhihu, and Juejin |
-| **Active Focus Engine (Component 2)** | 🟡 **Planned / In Design** | Dynamic intent scoping, task attention bounding, and hierarchical goal tracking |
+| **Active Focus Engine (Component 2)** | 🟢 **100% Completed** | Dynamic goal ledger, autonomous multi-track advancement, scope guard, anti-loop circuit breaker |
 | **Offline Local LLM Adapters (Ollama/vLLM)** | 🟡 **In Progress (30%)** | Native offline conflict reconciliation without external API keys |
 | **Cross-Repo Global Invariants (`~/.pi`)** | ⚪ **Planned** | Global coding style/rule inheritance across multiple workspaces |
 | **Hybrid Local Embedding Search** | ⚪ **Planned** | Optional lightweight ONNX/BGE embedding for cross-lingual fuzzy semantic recall |
@@ -119,15 +119,21 @@ To rigorously quantify the effect of Active Memory on long-horizon coding tasks,
      - *确定性规则回滚引擎*：在断网、模型超时或欠费时自动降级到本地规则启发式消解，保障 0 崩溃。
    - **自然语言交互与周期节流**：支持在对话中直接输入口语指令（如 *“把冲突检测间隔设为5轮”*），自动解析并持久化；默认每 3 轮节流执行，大幅节省 Token。
 
-2. **严格自动化 QA 测试套件 (`tests/test_qa_suite.mjs`)**:
-   - `Case 1 [废弃过滤]`：验证被 supersede 的历史旧规则 100% 不会被召回。
-   - `Case 2 [Jaccard去重]`：验证同义复述规则的重叠度计算与去重。
-   - `Case 3 [双引擎冲突消解]`：覆盖大模型因果追溯、离线规则回滚、时序留痕全链路。
-   - `Case 4 [容灾回退提取]`：验证无结构化数据时的启发式规则提取。
-   - `Case 5 [指令解析与节流]`：验证自然语言配置解析与轮次节流计数器。
-   - *当前状态*：`npm test` 5 项核心自检 **100% PASS**。
+2. **Active Focus 核心专注引擎 (`.pi/extensions/active-focus.ts`)**:
+   - **强目标锚定（Root Goal Invariant）**：生成结构化 `[ACTIVE FOCUS FRAME]` 置顶前置注入，强力阻断调用栈深入引发的“目标漂移”。
+   - **双轨自主结转机制（Dual-Track Autonomous Advancement）**：
+     - *确定性证据驱动*：检测子任务定义的退出码与输出特征（如 `SELFTEST: OK`），自检通过毫秒级自动标记 `completed` 并激活下一项子任务。
+     - *Agent 自主声明协议*：支持模型在重构或无测试阶段声明 `FOCUS_ADVANCE: <id> | <证据>` 主动推进，杜绝被困在单一目标打转。
+   - **作用域守卫（Scope Guard）**：支持 Glob 模式匹配的白名单与黑名单，阻断对无关业务或基准控制组文件的非预期越界破坏。
+   - **连续失败防死循环（Anti-Loop Circuit Breaker）**：记录工具调用健康度，连续 3 次失败触发熔断与假设自愈警报。
+   - *当前状态*：`tests/test_active_focus_suite.mjs` 6 项测试 **100% PASS**。
 
-3. **双项目连贯 A/B 盲测基准 (`experiments/tank_battle_benchmark`)**:
+3. **严格自动化 QA 测试套件 (`npm test`)**:
+   - `test_qa_suite.mjs`（Active Memory 5 项生命周期自检）：废弃过滤、Jaccard去重、双引擎消解、容灾提取、自然语言指令节流。
+   - `test_active_focus_suite.mjs`（Active Focus 6 项专注自检）：工作帧生成、作用域越界拦截、确定性证据推进、自主声明推进、防死循环熔断、口语化持久化控制。
+   - *当前状态*：全部 11 项核心 QA 验收测试 **100% PASS**。
+
+4. **双项目连贯 A/B 盲测基准 (`experiments/tank_battle_benchmark`)**:
    - **坦克大战（Stage 1）**：验证红白机经典玩法、4 种坦克、纯代码几何绘制约束。
    - **雷电复刻（Stage 2）**：验证长上下文下三系升级（黄机枪/跟踪导弹/激光）、同种三连吃满级、异种切换归 1 级、保险炸弹消弹、中弹降级、Boss 三阶段等。
    - *自检结果*：
@@ -173,7 +179,7 @@ pnpm install
 ```
 
 ### Running the QA Suite
-Run the 5 core lifecycle QA tests (废弃规则过滤、Jaccard 去重、双引擎冲突消解、容灾提取、自然语言指令节流):
+Run all 11 core lifecycle and focus QA tests:
 ```bash
 npm test
 ```
@@ -195,8 +201,10 @@ python3 experiments/tank_battle_benchmark/control_no_memory/raiden_game.py --tes
 ```
 ├── .pi/
 │   ├── active-memory.json            # Active invariant persistent memory state
+│   ├── active-focus.json             # Active focus goal ledger & scope guard state
 │   └── extensions/
-│       └── active-memory.ts          # Core Active Memory extension implementation
+│       ├── active-memory.ts          # Core Active Memory extension implementation
+│       └── active-focus.ts           # Core Active Focus extension implementation
 ├── experiments/
 │   ├── pi_active_memory_blog.md      # In-depth technical blog post & architecture paper
 │   ├── pi_active_memory_cover.jpg    # Article cover asset
@@ -204,7 +212,8 @@ python3 experiments/tank_battle_benchmark/control_no_memory/raiden_game.py --tes
 │       ├── treatment_active_memory/  # Raiden & Tank game (Active Memory treatment)
 │       └── control_no_memory/        # Raiden & Tank game (Baseline control)
 ├── tests/
-│   └── test_qa_suite.mjs             # Rigorous 5-point QA test suite
+│   ├── test_qa_suite.mjs             # 5-point Active Memory QA test suite
+│   └── test_active_focus_suite.mjs   # 6-point Active Focus QA test suite
 ├── package.json
 └── README.md
 ```
