@@ -2,8 +2,9 @@
 
 > **Replicating Meta's Muse Wonder Active Memory Paradigm for Autonomous Software Engineering Agents**
 
-[![QA Tests](https://img.shields.io/badge/QA%20Tests-5%2F5%20Passed-brightgreen.svg)](#qa--benchmark-suite)
-[![Benchmark Raiden](https://img.shields.io/badge/Raiden%20Benchmark-20%2F20%20Passed-brightgreen.svg)](#qa--benchmark-suite)
+[![QA Tests](https://img.shields.io/badge/QA%20Tests-11%2F11%20Passed-brightgreen.svg)](#qa--benchmark-suite)
+[![Raiden Benchmark](https://img.shields.io/badge/Raiden%20Benchmark-20%2F20%20Passed-brightgreen.svg)](#qa--benchmark-suite)
+[![Flight Combat Benchmark](https://img.shields.io/badge/Flight%20Combat%20Benchmark-15%2F15%20Passed-brightgreen.svg)](#qa--benchmark-suite)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
@@ -167,6 +168,30 @@ Cumulative Total: ~96,000 Tokens (节省 83.4% Token，一次性高质量通过)
 
 ---
 
+## 📸 Gameplay Screenshots Gallery (实机游戏画面实测)
+
+Below are actual gameplay screenshots captured directly from the automated benchmark suite, demonstrating the fidelity gap between the **Treatment Group** (with active invariant enforcement & goal anchors) and the degraded baseline:
+
+### 1. 《不列颠空战》第一人称二战飞行模拟 (Battle of Britain Flight Sim)
+| Stage 1: Dover Radar Defense (雷达站拦截战) | Stage 2: Calais Dive Bombing (加莱俯冲轰炸) |
+| :---: | :---: |
+| ![Stage 1: Dover Radar Defense](experiments/screenshots/air_combat_stage1_defense.png) | ![Stage 2: Calais Dive Bombing](experiments/screenshots/air_combat_stage2_bombing.png) |
+| *3D 人工地平线滚转姿态、喷火座舱仪表、雷达站守卫血条、机枪热量槽* | *大角度俯冲红色落点预测环、500磅自由落体航弹、德军 88mm 防空炮黑烟* |
+
+### 2. 《雷电》街机复刻 (Raiden Arcade Replication)
+| Stage 1: 3-Way Vulcan & Homing Missiles | Stage 2: Boss Chixiao Multi-Phase Barrage |
+| :---: | :---: |
+| ![Raiden Stage 1 Vulcan](experiments/screenshots/raiden_combat_vulcan_missiles.png) | ![Raiden Boss Chixiao Laser](experiments/screenshots/raiden_boss_battle_lasers.png) |
+| *火神机枪扇面弹幕、跟踪导弹追踪、敌机血条与星空视差* | *关底战舰“赤霄”三阶段生命值、多段同心环形弹幕、玩家贯穿激光束* |
+
+### 3. 《经典坦克大战》 (Classic Tank Battle)
+| Stage 1: Level 3 Gold Tank & Base Defense |
+| :---: |
+| ![Tank Battle Level 3 Gold Tank](experiments/screenshots/tank_battle_action.png) |
+| *3级强化金坦克带力场护盾、老鹰基地砖墙防御、星形与护盾掉落道具、四向全几何渲染* |
+
+---
+
 ## 📊 Project Progress & Roadmap (项目完成进度与规划)
 
 ### 📈 Milestone Overview
@@ -219,24 +244,27 @@ Cumulative Total: ~96,000 Tokens (节省 83.4% Token，一次性高质量通过)
      - Treatment 组：坦克 25/25 PASS，雷电 20/20 PASS（通过率 **100%**）。
      - Control 组：修复后基线 17/17 PASS，但暴露出缺失炸弹意识、丢失死亡惩罚、代码冗余多出 14%~17.6% 等结构性缺陷。
 
+5. **二战《不列颠空战》第一人称飞行模拟 A/B 基准 (`experiments/air_combat_benchmark`)**:
+   - **保卫战（Stage 1）**：验证 3D 旋转滚转矩阵、喷火座舱仪表、多佛雷达站生命值保卫与德军突防下弹判定。
+   - **俯冲轰炸（Stage 2）**：验证俯冲对地瞄准具落点预测环、500磅自由落体航弹引信、88mm防空高炮空爆黑烟。
+   - *自检结果*：
+     - Treatment 组：15/15 PASS（通过率 **100%**）。
+     - Control 组：2/5 PASS（暴露出丢失滚转矩阵、雷达站守卫降级、机枪扫地无航弹等 3 项重大退化）。
+
 ---
 
 ### 🚧 In-Progress & Planned Roadmap (待实现 / 进行中)
 
-1. **Meta Muse Wonder 核心模块二：Active Focus 引擎** `[进行中 / 架构设计]`
-   - 目标：复刻 Muse Wonder 技术报告中的 **Active Focus** 范式。
-   - 规划：在多任务并发或复杂重构中，构建动态任务意图边界（Task Attention Frame），防止 Agent 在修改底层基础库时发生目标发散与过度修改。
-
-2. **离线/本地大模型冲突仲裁适配器** `[进行中 (30%)]`
+1. **离线/本地大模型冲突仲裁适配器** `[进行中 (30%)]`
    - 目标：除当前支持的 OpenAI 兼容接口外，增加对 Ollama、vLLM 以及本地小型化模型（如 Qwen2.5-Coder-1.5B/7B）的直连适配，实现完全零外部网络依赖的本地闭环。
 
-3. **全局多仓库记忆级联 (`~/.pi/global-memory.json`)** `[待排期]`
+2. **全局多仓库记忆级联 (`~/.pi/global-memory.json`)** `[待排期]`
    - 目标：将个人通用工程偏好（如代码风格、首选测试框架、Git 提交规范）提升为全局不变量，项目级记忆继承全局记忆并支持局部覆盖。
 
-4. **混合语义向量检索（Hybrid Invariant Recall）** `[待排期]`
+3. **混合语义向量检索（Hybrid Invariant Recall）** `[待排期]`
    - 目标：在保持极快 Jaccard 词元检索的基础上，引入可选的本地轻量 ONNX 向量嵌入（如 BGE-micro），增强跨语种与深层隐式语义的召回能力。
 
-5. **交互式 TUI 记忆调试器（CLI Inspector）** `[待排期]`
+4. **交互式 TUI 记忆调试器（CLI Inspector）** `[待排期]`
    - 目标：开发终端可视化工具（`pi memory ls`、`pi memory tree`、`pi memory prune`），允许开发者直观查看因果推翻链条并一键剪枝。
 
 ---
