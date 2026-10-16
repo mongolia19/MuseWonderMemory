@@ -113,7 +113,84 @@ class ControlGame:
         # Bug: Flat horizon without bank angle
         h_y = int(HEIGHT / 2 + self.flight.pitch * 300)
         pygame.draw.rect(self.screen, (30, 70, 40), (0, h_y, WIDTH, HEIGHT - h_y))
+
+        # Crosshair
+        pygame.draw.circle(self.screen, (255, 170, 30), (WIDTH // 2, HEIGHT // 2), 24, 2)
+        pygame.draw.line(self.screen, (255, 170, 30), (WIDTH // 2 - 35, HEIGHT // 2), (WIDTH // 2 + 35, HEIGHT // 2), 2)
+        pygame.draw.line(self.screen, (255, 170, 30), (WIDTH // 2, HEIGHT // 2 - 35), (WIDTH // 2, HEIGHT // 2 + 35), 2)
+
+        # Bullets
+        for b in self.bullets:
+            pt = self.project_3d(b["x"], b["y"], b["z"])
+            if pt[0] is not None:
+                pygame.draw.circle(self.screen, (255, 240, 150), pt, 4)
+
+        # Enemies (Stage 1)
+        if self.stage == 1:
+            for e in self.enemies:
+                if e["alive"]:
+                    pt = self.project_3d(e["x"], e["y"], e["z"])
+                    if pt[0] is not None:
+                        w = max(10, int(18000 / e["z"]))
+                        pygame.draw.rect(self.screen, (60, 80, 65), (pt[0] - w // 2, pt[1] - 8, w, 16))
+        else:
+            # Ground targets (Stage 2)
+            for g in self.ground_targets:
+                if g["alive"]:
+                    pt = self.project_3d(g["x"], g["y"], g["z"])
+                    if pt[0] is not None:
+                        w = max(12, int(22000 / g["z"]))
+                        pygame.draw.rect(self.screen, (100, 100, 105), (pt[0] - w // 2, pt[1] - w // 4, w, w // 2))
+
+        # Cockpit lower panel & HUD text
+        pygame.draw.rect(self.screen, (22, 24, 28), (0, HEIGHT - 110, WIDTH, 110))
+        font = pygame.font.SysFont("monospace", 14)
+        status_txt = f"STAGE {self.stage} | HEALTH: {self.player_health}% | KILLS: {self.kills if self.stage == 1 else self.ground_kills}"
+        mode_txt = "STAGE 1: DOGFIGHT (RADAR BASE MISSING)" if self.stage == 1 else "STAGE 2: STRAFING (BOMB DROP MISSING)"
+        warn_txt = "[CONTROL GROUP: FLAT HORIZON / NO RADAR HP / NO DIVE BOMB]"
+        self.screen.blit(font.render(status_txt, True, (220, 220, 210)), (30, HEIGHT - 90))
+        self.screen.blit(font.render(mode_txt, True, (255, 170, 30)), (30, HEIGHT - 65))
+        self.screen.blit(font.render(warn_txt, True, (240, 80, 80)), (30, HEIGHT - 40))
+
         pygame.display.flip()
+
+    def run(self):
+        running = True
+        fire_cooldown = 0.0
+        while running:
+            dt = self.clock.tick(FPS) / 1000.0
+            if fire_cooldown > 0:
+                fire_cooldown -= dt
+            p_in, r_in = 0.0, 0.0
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                    elif event.key in (pygame.K_SPACE, pygame.K_j):
+                        if fire_cooldown <= 0:
+                            self.fire()
+                            fire_cooldown = 0.12
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_w] or keys[pygame.K_UP]:
+                p_in = 1.0
+            elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
+                p_in = -1.0
+            if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+                r_in = -1.0
+            elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+                r_in = 1.0
+
+            if (keys[pygame.K_SPACE] or keys[pygame.K_j]) and fire_cooldown <= 0:
+                self.fire()
+                fire_cooldown = 0.12
+
+            self.flight.update(dt, p_in, r_in)
+            self.update(dt)
+            self.draw()
+        pygame.quit()
 
 def run_control_selftest():
     print("==========================================================================")
@@ -164,3 +241,4 @@ if __name__ == "__main__":
         run_control_selftest()
     else:
         cg = ControlGame()
+        cg.run()
