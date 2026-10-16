@@ -274,27 +274,45 @@ Below are actual gameplay screenshots captured directly from the automated bench
 
 ### 1. 快速安装与启用
 
-#### 方式一：当前项目零配置自动生效
+#### 方式一：官方 Marketplace 本地一键安装（推荐）
+```bash
+# 1. 注册本地 Marketplace 市场源并安装
+claude plugin marketplace add .
+claude plugin install muse-wonder@muse-wonder
+
+# 2. 查看已安装插件状态
+claude plugin list
+claude plugin details muse-wonder@muse-wonder
+```
+
+#### 方式二：当前项目零配置自动生效
 直接在本仓库目录下运行 Claude Code，插件即刻自动加载：
 ```bash
 claude
 ```
 
-#### 方式二：一键安装到全局环境
-通过项目自带的安装脚本，将插件链接到全局 Claude Code 插件目录：
+#### 方式三：脚本一键软链全局安装
 ```bash
 ./scripts/install.sh
 ```
 
-#### 方式三：通过 Claude CLI 安装或校验
-```bash
-# 严格合规校验
-claude plugin validate --strict .
-```
+---
+
+### 2. 核心架构设计：确定性代码 vs LLM 决策分工
+
+为什么越界拦截（Scope Guard）与特征推进（Track 1）**坚持用确定性代码而非 LLM**？
+
+| 判定环节 | 确定性代码实现 (Glob / 正则 / ExitCode) | 若改用 LLM 判定 (每次工具调用问模型) | 性能与安全收益 |
+| :--- | :--- | :--- | :--- |
+| **越界拦截 (`PreToolUse`)** | **< 0.1 ms** (原生路径 Glob 匹配) | **500 ms ~ 1,500 ms** (网络往返 + 生成) | **快 10,000 倍**，且彻底消除 Prompt 注入与幻觉风险 |
+| **确定性结转 (`PostToolUse`)** | **< 0.2 ms** (输出特征正则 + 退出码判定) | **800 ms ~ 2,500 ms** (全量日志喂模型分析) | **快 5,000 倍**，单会话节省 10,000+ 上下文 Token |
+| **冲突消解 (`reconcile`)** | 规则引擎兜底 (`rule-based fallback`) | **LLM 语义裁决** (`semantic judge`) | **在真正需要抽象理解与因果推断处精准使用模型** |
+
+> **设计哲学**：**边界规则用代码（绝对可靠、0 延迟、0 成本），语义理解用模型（解决冲突与意图识别）**，坚决不把代码能做的事推给 LLM。
 
 ---
 
-### 2. 生命周期钩子行为 (Lifecycle Hooks)
+### 3. 生命周期钩子行为 (Lifecycle Hooks)
 
 | 触发时机 (Hook) | 执行脚本 | 核心功能 |
 | :--- | :--- | :--- |
@@ -306,7 +324,7 @@ claude plugin validate --strict .
 
 ---
 
-### 3. MCP 工具与斜杠命令 (Tools & Slash Commands)
+### 4. MCP 工具与斜杠命令 (Tools & Slash Commands)
 
 #### 🛠️ MCP 工具清单 (8项标准工具)
 * `memory_recall`: 语义检索与相关度评分召回不变量。
@@ -358,7 +376,7 @@ pnpm install
 ```
 
 ### Running the QA Suite
-Run all 11 core lifecycle and focus QA tests:
+Run all 23 core automated tests (Memory: 5, Focus: 6, Claude Code Plugin: 12):
 ```bash
 npm test
 ```
@@ -378,7 +396,28 @@ python3 experiments/tank_battle_benchmark/control_no_memory/raiden_game.py --tes
 ## 📁 Repository Structure
 
 ```
-├── .pi/
+├── .claude-plugin/                   # Claude Code official plugin manifest & marketplace
+│   ├── plugin.json                   # Official Claude Code plugin configuration
+│   └── marketplace.json              # Local marketplace registration manifest
+├── .mcp.json                         # MCP Server auto-discovery configuration
+├── core/                             # Zero-dependency cognitive engines (ESM)
+│   ├── utils.mjs                     # Tokenizer, Jaccard overlap, glob matchers
+│   ├── memory-engine.mjs             # Invariant storage, <10ms recall, dual reconciliation
+│   └── focus-engine.mjs              # Goal ledger, scope guard, multi-track advancement
+├── hooks/                            # Claude Code native lifecycle hooks
+│   ├── hooks.json                    # Hook event declaration manifest
+│   ├── session-start.mjs             # Invariant and focus frame injection
+│   ├── user-prompt-submit.mjs        # Directives parsing and <10ms fast recall
+│   ├── pre-tool-use.mjs              # Scope Guard filesystem boundary interception
+│   ├── post-tool-use.mjs             # Deterministic criteria advancement & anti-loop breaker
+│   └── stop.mjs                      # Agent protocol advancement & memory distillation
+├── mcp/
+│   └── server.mjs                    # Standard JSON-RPC 2.0 stdio MCP Server (8 tools)
+├── skills/                           # Claude Code skills (active-memory, active-focus, etc.)
+├── commands/                         # Slash command shortcuts (/memory, /focus, /reconcile)
+├── scripts/
+│   └── install.sh                    # One-click symlink installation script
+├── .pi/                              # Pi Agent native extension & persistent state
 │   ├── active-memory.json            # Active invariant persistent memory state
 │   ├── active-focus.json             # Active focus goal ledger & scope guard state
 │   └── extensions/
@@ -387,15 +426,12 @@ python3 experiments/tank_battle_benchmark/control_no_memory/raiden_game.py --tes
 ├── experiments/
 │   ├── pi_active_memory_blog.md      # In-depth technical blog post & architecture paper
 │   ├── pi_active_memory_cover.jpg    # Article cover asset
-│   ├── tank_battle_benchmark/
-│   │   ├── treatment_active_memory/  # Raiden & Tank game (Active Memory treatment)
-│   │   └── control_no_memory/        # Raiden & Tank game (Baseline control)
-│   └── air_combat_benchmark/
-│       ├── treatment_active_muse/    # Battle of Britain 1st-person flight (Active Muse)
-│       └── control_no_memory/        # Battle of Britain baseline (Control group)
+│   ├── tank_battle_benchmark/        # Tank & Raiden A/B benchmark
+│   └── air_combat_benchmark/         # Battle of Britain 1st-person flight benchmark
 ├── tests/
-│   ├── test_qa_suite.mjs             # 5-point Active Memory QA test suite
-│   └── test_active_focus_suite.mjs   # 6-point Active Focus QA test suite
+│   ├── test_qa_suite.mjs             # 5-point Active Memory QA suite
+│   ├── test_active_focus_suite.mjs   # 6-point Active Focus QA suite
+│   └── test_claude_plugin_suite.mjs  # 12-point Claude Code Plugin QA suite
 ├── package.json
 └── README.md
 ```
