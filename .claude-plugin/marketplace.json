@@ -1,0 +1,30 @@
+{
+  "name": "muse-wonder",
+  "owner": {
+    "name": "Muse Wonder Team",
+    "url": "https://github.com/mongolia19/MuseWonderMemory"
+  },
+  "metadata": {
+    "description": "Meta Muse Wonder Active Memory and Active Focus cognitive engine for Claude Code",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "muse-wonder",
+      "description": "Meta Muse Wonder Active Memory and Active Focus cognitive engine plugin for Claude Code",
+      "version": "1.0.0",
+      "author": {
+        "name": "Muse Wonder Team"
+      },
+      "homepage": "https://github.com/mongolia19/MuseWonderMemory",
+      "tags": [
+        "active-memory",
+        "active-focus",
+        "invariants",
+        "scope-guard",
+        "mcp"
+      ],
+      "source": "./"
+    }
+  ]
+}
