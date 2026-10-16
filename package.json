@@ -2,7 +2,7 @@
   "packageManager": "pnpm@12.11.2",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-strip-types tests/test_qa_suite.mjs && node --experimental-strip-types tests/test_active_focus_suite.mjs"
+    "test": "node --experimental-strip-types tests/test_qa_suite.mjs && node --experimental-strip-types tests/test_active_focus_suite.mjs && node tests/test_claude_plugin_suite.mjs"
   },
   "dependencies": {
     "lodash": "^4.18.1",

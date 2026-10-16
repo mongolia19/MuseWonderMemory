@@ -1,0 +1,17 @@
+{
+  "name": "muse-wonder",
+  "version": "1.0.0",
+  "description": "Meta Muse Wonder Active Memory & Active Focus plugin for Claude Code. Proactive invariant recall (<10ms), dual-engine contradiction reconciliation, dynamic goal ledger, scope guard, and anti-loop circuit breaker.",
+  "author": {
+    "name": "MuseWonder Labs"
+  },
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": {
+    "muse-wonder": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs"
+      ]
+    }
+  }
+}

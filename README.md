@@ -2,7 +2,8 @@
 
 > **Replicating Meta's Muse Wonder Active Memory Paradigm for Autonomous Software Engineering Agents**
 
-[![QA Tests](https://img.shields.io/badge/QA%20Tests-11%2F11%20Passed-brightgreen.svg)](#qa--benchmark-suite)
+[![QA Tests](https://img.shields.io/badge/QA%20Tests-23%2F23%20Passed-brightgreen.svg)](#qa--benchmark-suite)
+[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-Plugin%20Ready-blueviolet.svg)](#-claude-code-plugin-claude-code-官方插件)
 [![Raiden Benchmark](https://img.shields.io/badge/Raiden%20Benchmark-20%2F20%20Passed-brightgreen.svg)](#qa--benchmark-suite)
 [![Flight Combat Benchmark](https://img.shields.io/badge/Flight%20Combat%20Benchmark-15%2F15%20Passed-brightgreen.svg)](#qa--benchmark-suite)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -201,8 +202,10 @@ Below are actual gameplay screenshots captured directly from the automated bench
 | **System 1: Invariant Storage & Fast Recall** | 🟢 **100% Completed** | Typed JSON schema, sub-millisecond Jaccard token overlap & inverted keyword indexing, strict superseded rule exclusion |
 | **System 2: Dual-Engine Reconciliation** | 🟢 **100% Completed** | LLM causal judge + rule-based fallback, contradiction resolution, causal lineage tracking (`supersededBy`/`supersedes`) |
 | **Natural Language Directives & Throttling** | 🟢 **100% Completed** | Regex command parser, dynamic intervals (e.g. *"把冲突检测间隔设为5轮"*), zero-config persistence |
-| **QA Test Suite (5 Core Scenarios)** | 🟢 **100% Completed** | 5/5 automated test cases passing in Node 22 (`npm test`) |
+| **Claude Code Native Plugin** | 🟢 **100% Completed** | Native lifecycle hooks (`SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `Stop`), MCP Server, Slash Commands |
+| **QA Test Suite (23 Core Scenarios)** | 🟢 **100% Completed** | 23/23 automated test cases passing across Memory (5), Focus (6), and Claude Code Plugin (12) (`npm test`) |
 | **Raiden & Tank Arcade Benchmarks** | 🟢 **100% Completed** | Headless automated verification for both Treatment (20/20 PASS) and Control (17/17 PASS) groups |
+| **Air Combat Flight Sim Benchmark** | 🟢 **100% Completed** | 1st-person 3D flight combat with 2-stage campaign (Treatment 15/15 PASS vs Control 2/5 PASS) |
 | **Open Source Release & Technical Blog** | 🟢 **100% Completed** | Published across GitHub Pages, 58 iShare, CSDN, Zhihu, and Juejin |
 | **Active Focus Engine (Component 2)** | 🟢 **100% Completed** | Dynamic goal ledger, autonomous multi-track advancement, scope guard, anti-loop circuit breaker |
 | **Offline Local LLM Adapters (Ollama/vLLM)** | 🟡 **In Progress (30%)** | Native offline conflict reconciliation without external API keys |
@@ -250,6 +253,75 @@ Below are actual gameplay screenshots captured directly from the automated bench
    - *自检结果*：
      - Treatment 组：15/15 PASS（通过率 **100%**）。
      - Control 组：2/5 PASS（暴露出丢失滚转矩阵、雷达站守卫降级、机枪扫地无航弹等 3 项重大退化）。
+
+6. **Claude Code 官方原生插件体系 (`.claude-plugin/plugin.json`, `hooks/`, `mcp/`, `skills/`, `commands/`)**:
+   - **完全无缝适配 Claude Code**: 遵循 Anthropic Claude Code 官方插件规范，支持通过 `claude plugin install` 或零配置直接加载。
+   - **全生命周期钩子**:
+     - `SessionStart`: 自动装载工程不变量与主线任务工作帧。
+     - `UserPromptSubmit`: `<10ms` 极速不变量召回，解析口语化指令（“冲突检测设为5轮”、“锁定目标: ...”）。
+     - `PreToolUse`: Scope Guard 路径守卫拦截，阻断对越界文件的意外写操作。
+     - `PostToolUse`: 确定性输出特征匹配，自动结转完成子任务；连续失败健康度记录（防死循环熔断）。
+     - `Stop`: Agent 声明协议结转（`FOCUS_ADVANCE`）与周期性记忆提炼消解。
+   - **官方标准 MCP Server (`mcp/server.mjs`)**: 提供 8 项核心标准工具 (`memory_recall`, `memory_save`, `memory_supersede`, `memory_list`, `focus_status`, `focus_set_goal`, `focus_advance`, `focus_set_scope`)。
+   - **专属斜杠命令**: 支持 `/memory`, `/focus`, `/reconcile` 命令。
+   - *当前状态*: `tests/test_claude_plugin_suite.mjs` 12 项测试及 `claude plugin validate --strict .` **100% PASS**。
+
+---
+
+## 🔌 Claude Code Plugin (Claude Code 官方插件使用指南)
+
+本项目完全原生兼容 Anthropic **Claude Code** (`claude` CLI) 官方插件标准。
+
+### 1. 快速安装与启用
+
+#### 方式一：当前项目零配置自动生效
+直接在本仓库目录下运行 Claude Code，插件即刻自动加载：
+```bash
+claude
+```
+
+#### 方式二：一键安装到全局环境
+通过项目自带的安装脚本，将插件链接到全局 Claude Code 插件目录：
+```bash
+./scripts/install.sh
+```
+
+#### 方式三：通过 Claude CLI 安装或校验
+```bash
+# 严格合规校验
+claude plugin validate --strict .
+```
+
+---
+
+### 2. 生命周期钩子行为 (Lifecycle Hooks)
+
+| 触发时机 (Hook) | 执行脚本 | 核心功能 |
+| :--- | :--- | :--- |
+| **`SessionStart`** | `hooks/session-start.mjs` | 会话启动时自动注入历史有效不变量与当前专注主线任务 |
+| **`UserPromptSubmit`** | `hooks/user-prompt-submit.mjs` | 毫秒级根据用户输入召回 Top-K 约束；解析口语化指令（如“把冲突检测设为5轮”） |
+| **`PreToolUse`** | `hooks/pre-tool-use.mjs` | 作用域守卫（Scope Guard），阻断对白名单外或禁改黑名单文件的修改 |
+| **`PostToolUse`** | `hooks/post-tool-use.mjs` | 自动匹配测试输出特征结转任务；记录连续失败次数触发防死循环熔断 |
+| **`Stop`** | `hooks/stop.mjs` | 响应 Agent 的 `FOCUS_ADVANCE` 声明推进任务；周期性沉淀新不变量与冲突消解 |
+
+---
+
+### 3. MCP 工具与斜杠命令 (Tools & Slash Commands)
+
+#### 🛠️ MCP 工具清单 (8项标准工具)
+* `memory_recall`: 语义检索与相关度评分召回不变量。
+* `memory_save`: 注册新工程不变量并自动触发时序冲突消解。
+* `memory_supersede`: 显式推翻废弃旧规则并建立有向因果链条。
+* `memory_list`: 列出全部活跃与历史推翻不变量。
+* `focus_status`: 检查当前 Active Focus 工作帧与目标执行进度。
+* `focus_set_goal`: 设定或重组主线目标与有序子任务列表。
+* `focus_advance`: 附带自验证据推进当前攻坚子任务。
+* `focus_set_scope`: 动态调整作用域白名单与黑名单。
+
+#### ⚡ 交互式斜杠命令
+* `/memory`：查看当前活跃约束，或手动添加、推翻规则。
+* `/focus`：查看当前攻坚目标、子任务队列与作用域限制。
+* `/reconcile`：手动触发一次深度矛盾因果消解。
 
 ---
 
